@@ -128,16 +128,30 @@
             dataInicial.setHours(0, 0, 0, 0);
             agora.setHours(0, 0, 0, 0);
 
-            const anos = agora.getFullYear() - dataInicial.getFullYear();
-            const meses = agora.getMonth() - dataInicial.getMonth();
-            const dias = agora.getDate() - dataInicial.getDate();
+            // Calcular a diferença de anos, meses e dias
+            let anos = agora.getFullYear() - dataInicial.getFullYear();
+            let meses = agora.getMonth() - dataInicial.getMonth();
+            let dias = agora.getDate() - dataInicial.getDate();
 
-            // Ajustar o cálculo se o mês ou o dia ainda não tiverem ocorrido
-            const ajusteMeses = meses < 0 ? anos-- && (meses + 12) : meses;
-            const ajusteDias = dias < 0 ? (meses === 0 ? (dias + 30) : dias + 30) : dias;
+            // Ajuste de meses
+            if (meses < 0) {
+                anos--;
+                meses += 12;
+            }
 
-            // Ajustar para o caso de a diferença de meses ser negativa
-            const tempoTotal = `${ajusteMeses} meses, ${ajusteDias} dias`;
+            // Ajuste de dias
+            if (dias < 0) {
+                const ultimoDiaDoMesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0).getDate(); // Último dia do mês anterior
+                dias += ultimoDiaDoMesAnterior;
+                meses--; // Se o cálculo de dias for negativo, subtraímos um mês
+                if (meses < 0) {
+                    meses = 11;
+                    anos--;
+                }
+            }
+
+            // Gerar o texto com a diferença de tempo
+            const tempoTotal = `${meses} meses, ${dias} dias`;
 
             // Exibir tempo no contador
             document.getElementById(idContador).textContent = tempoTotal;
